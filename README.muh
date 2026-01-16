@@ -1,0 +1,44 @@
+
+run clasp login (npm run login) as michael.uhlenberg@adfc-muenchen.de
+
+then npm run push
+
+Formular https://forms.gle/kbCNP2jAiYjsuC297
+Stornierung: https://forms.gle/ip73brsD5aZodkJp8
+
+To ensure you have the correct, transpiling version of the Google Apps Script CLI, you should install @google/clasp as a local development dependency. Version 2.4.2 does automatically transpile TypeScript (.ts) to Apps Script (.gs) upon pushing.
+
+Here is how to configure your project to use the correct version:
+
+1. Update package.json
+Add @google/clasp to your devDependencies and add convenience scripts.
+
+package.json
+-1
++7
+  "type": "commonjs",
+  "main": "Code.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "push": "clasp push",
+    "pull": "clasp pull",
+    "open": "clasp open"
+  },
+  "devDependencies": {
+    "@google/clasp": "^2.4.2"
+  }
+}
+2. Install and Push
+Run the installation command in your terminal, then use the local clasp to push your code.
+
+bash
+npm install
+npm run push
+Why might transpilation fail?
+If you are using the correct version and transpilation still seems to fail (e.g., you see .ts files on script.google.com or syntax errors):
+
+Check .claspignore: Ensure you are not ignoring .ts files.
+Check tsconfig.json: Clasp requires this file to enable TypeScript handling. Your provided tsconfig.json looks correct.
+Server-side renaming: Clasp uploads .ts files but renames them to .gs on the Google Apps Script server. If you pull them back, they might come as .js unless you have the original source locally.
+Gen

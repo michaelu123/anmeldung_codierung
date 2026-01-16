@@ -1,0 +1,19 @@
+{
+  "name": "codier",
+  "version": "1.0.0",
+  "description": "codier",
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "Code.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "push": "clasp push",
+    "pull": "clasp pull",
+    "open": "clasp open",
+    "login": "clasp login"
+  },
+  "devDependencies": {
+    "@google/clasp": "^2.4.2"
+  }
+}

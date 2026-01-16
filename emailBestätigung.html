@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <base target="_top" />
+</head>
+
+<body>
+  <p>
+    <?= anrede ?>,<br />
+    <?  if (erfolg) { ?>
+    Du bist für einen Codiertermin am<br />
+  <p>
+    <bold><?= termin ?></bold>
+  </p>
+  angemeldet.<br />
+  Für die Codierung verwenden wir Deinen Namen und die Adresse
+  <p>
+    <?= adresse ?>
+  </p>
+  Bitte bringe zum Termin diese E-Mail ausgedruckt oder auf Deinem Mobiltelefon mit.<br />
+  Außerdem noch Deinen Personalausweis/Pass und, falls vorhanden, den Fahrradpass.<br />
+  <? } else { ?>
+  Deine Anmeldung für einen Codiertermin am<br />
+  <p>
+    <bold><?= termin ?></bold>
+  </p>
+  hat leider nicht geklappt. Jemand anderes war wohl schneller...<br />
+  <? } ?>
+  Mit freundlichen Grüßen,<br />
+  <br />
+  AG Codierung, Allgemeiner Deutscher Fahrrad-Club München e.V.<br />
+  Platenstraße 4<br />
+  80336 München<br />
+  Tel. 089 | 773429<br />
+  anmeldungen-codierung@adfc-muenchen.de<br />
+  https://muenchen.adfc.de<br />
+  </p>
+</body>
+
+</html>
