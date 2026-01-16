@@ -44,6 +44,10 @@ let printCols = new Map([
 
 const terminFrage = "Termin";
 
+// stornoLink&entry.1311335958=ttttttttttttttttt&entry.1578718228=eeeeeeeeeeeeeeeee
+const stornoLink =
+  "https://docs.google.com/forms/d/e/1FAIpQLSfXh7Ib0qO-ksCMYeuFsQDKKUbKelGBWGSq0anoOyjous_44w/viewform?usp=pp_url";
+
 interface SSEvent {
   namedValues: { [others: string]: string[] };
   range: GoogleAppsScript.Spreadsheet.Range;
@@ -189,6 +193,7 @@ function sendeBestätigung(
   template.termin = termin;
   template.erfolg = erfolg;
   template.adresse = addresse;
+  template.stornoUrl = stornoLink + "&entry.1311335958=" + termin + "&entry.1578718228=" + emailTo;
 
   let htmlText: string = template.evaluate().getContent();
   let textbody = "HTML only";
@@ -358,13 +363,13 @@ function checkStornierung(e: SSEvent) {
         rowValues[stornoMailIndex - 1].trim().toLowerCase()
     ) {
       storniert = true;
-      anmeldungenSheet.getRange(row, 1).setNote("Storniert");
+      anmeldungenSheet.getRange(b + 2, 1).setNote("Storniert");
       sendeStornierung(sheet, anmeldungenVals[b]);
       break;
     }
   }
   if (storniert) {
-    updateTerminReste();
+    updateTerminReste(false);
     updateForm();
   }
 }
@@ -377,7 +382,7 @@ function update() {
     return;
   }
   if (!inited) init();
-  updateTerminReste();
+  updateTerminReste(true);
   updateForm();
   docLock.releaseLock();
 }
@@ -391,7 +396,7 @@ function date2Str(ddate: Date): string {
   return sdate;
 }
 
-function updateTerminReste() {
+function updateTerminReste(fromUi: boolean) {
   let termineRows = termineSheet.getLastRow() - 1; // first row = headers
   let termineCols = termineSheet.getLastColumn();
   let termineVals = termineSheet.getRange(2, 1, termineRows, termineCols).getValues();
@@ -432,20 +437,24 @@ function updateTerminReste() {
     if (terminGebucht == null) terminGebucht = 0;
     let terminRest: number = terminPlätze - terminGebucht;
     if (terminRest < 0) {
-      SpreadsheetApp.getUi().alert("Der Termin '" + termin + "' ist überbucht!");
+      if (fromUi) {
+        SpreadsheetApp.getUi().alert("Der Termin '" + termin + "' ist überbucht!");
+      }
       terminRest = 0;
     }
     if (terminRest !== restPlätze) {
       termineSheet.getRange(2 + r, restPlätzeIndex).setValue(terminRest);
-      SpreadsheetApp.getUi().alert(
-        "Restplätze des Termin '" +
-          termin +
-          "' von " +
-          restPlätze +
-          " auf " +
-          terminRest +
-          " geändert!",
-      );
+      if (fromUi) {
+        SpreadsheetApp.getUi().alert(
+          "Restplätze des Termins '" +
+            termin +
+            "' von " +
+            restPlätze +
+            " auf " +
+            terminRest +
+            " geändert!",
+        );
+      }
     }
   }
 }
@@ -482,8 +491,9 @@ function updateForm() {
   }
   Logger.log("termineObjs=%s", termineObjs);
 
-  let ss = SpreadsheetApp.getActiveSpreadsheet();
-  let formUrl = ss.getFormUrl();
+  // let ss = SpreadsheetApp.getActiveSpreadsheet();
+  // let formUrl = ss.getFormUrl();
+  let formUrl = anmeldungenSheet.getFormUrl();
   // Logger.log("formUrl2 %s", formUrl);
   let form: GoogleAppsScript.Forms.Form = FormApp.openByUrl(formUrl);
   let items = form.getItems();
